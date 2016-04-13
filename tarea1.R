@@ -89,21 +89,13 @@ plot(cleandata[,7],cleandata[,6])
 #el rango con mas eventos.
 
 
-eventRange <- 0
+matrix <- 0
 for (EvIndex in 3:54){
   value<-as.numeric(cleandata[EvIndex,6])
-  
-  if ((50>value)&&(value>40)){eventRange[1]<-eventRange[1]+1}
-  if ((40>value)&&(value>30)){eventRange[2]<-eventRange[2]+1}
-  if (30>value&&value>20){eventRange[3]<-eventRange[3]+1}
-  if (20>value&&value>10){eventRange[4]<-eventRange[4]+1}
-  if (10>value&&value>0){eventRange[5]<-eventRange[5]+1}
-  if (0>value&&value>-10){eventRange[6]<-eventRange[6]+1}
-  if (-10>value&&value>-20){eventRange[7]<-eventRange[7]+1}
-  if (-20>value&&value>-30){eventRange[8]<-eventRange[8]+1}
-  if (-30>value&&value>-40){eventRange[9]<-eventRange[9]+1}
-  if (-40>value&&value>-50){eventRange[10]<-eventRange[10]+1}
-
+  #Esto hace como funcion floor.
+  rangeValue = as.integer(value/10)
+  matrix[EvIndex-2]<-rangeValue
+  hist(matrix)
   
 }
 
