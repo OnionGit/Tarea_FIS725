@@ -1,22 +1,44 @@
+print("Leyendo datos...")
 mydata = read.table("NuAstro_4yr_IceCube_Data.txt",stringsAsFactors = F)
+print("Borrando eventos con entradas incompletas...")
 good <- complete.cases(mydata)
 cleandata <-mydata[good, ]
+#Sacamos los valores de resolucion
 resolution<-cleandata[2:54,8]
 resolution<-as.numeric(resolution)
+
+#Calculamos la media por loop
+sum <-0
+count <-0
+for (index in 1:length(resolution)){
+  sum <- sum + resolution[index]
+  count<-count+1
+}
+
+print("La media es por la funcion mean: ")
 mean(resolution)
-summary(resolution)
+print("La media es por loop: ")
+print(sum/count)
+
+#Sacamos las fechas en MJD
 mjd<-cleandata[2:54,5]
 mjd<-as.numeric(mjd)
 
+#Funcion para convertir, tiempo origen. 86400 es para convertir a segundos.
 mjd2posix = function(x){as.POSIXct('1858-11-17',tz='UTC')+x*86400}
 
+#Convirtiendo todas las fechas
+#Aqui tenia que inicializar el GMT, y si agregaba otra cosa se cambiaba a num
+#Intente usando list, pero en ese caso leia como num.
 GMT <- mjd2posix(0)
 for (j in 2:length(mjd)+1){
   GMT[j] <- mjd2posix(mjd[j])
 }
+#Añadiendo las fechas a la lista de datos principal
 cleandata<- cbind(cleandata,GMT)
 
-evt_month<-function(data,month){
+#Funcion para hallar el numero de eventos en un mes dado.
+evt_month<-function(month){
   z=0
   if (month == 1) {p<-"enero"}
   if (month == 2) {p<-"febrero"}
@@ -37,8 +59,9 @@ evt_month<-function(data,month){
   return(z)
 }
 
+#Loop para hallar el mes con mas eventos
 for(m in 1:12){
-  max[m] <- evt_month(cleandata,m)
+  max[m] <- evt_month(m)
 }
 
 month<-which.max(maximo)
@@ -57,7 +80,31 @@ if (month == 11) {p<-"noviembre"}
 if (month == 12) {p<-"diciembre"}
 print("El mes con mas eventos es: ")
 print(p)
+#Haciendo el plot en coordenadas ecuatoriales
+plot(cleandata[,7],cleandata[,6])
+
+#Esperaria que haya una zona más activa en el cielo que corresponderia con
+#la via lactea,ya que ahi estan todos los objetos interesantes.
+#Asi que divido el cielo en zonas de un rango de ascension recta y hallo
+#el rango con mas eventos.
+
+
+eventRange <- 0
+for (EvIndex in 3:54){
+  value<-as.numeric(cleandata[EvIndex,6])
   
-plot(cleandata[,8],cleandata[,7])
+  if ((50>value)&&(value>40)){eventRange[1]<-eventRange[1]+1}
+  if ((40>value)&&(value>30)){eventRange[2]<-eventRange[2]+1}
+  if (30>value&&value>20){eventRange[3]<-eventRange[3]+1}
+  if (20>value&&value>10){eventRange[4]<-eventRange[4]+1}
+  if (10>value&&value>0){eventRange[5]<-eventRange[5]+1}
+  if (0>value&&value>-10){eventRange[6]<-eventRange[6]+1}
+  if (-10>value&&value>-20){eventRange[7]<-eventRange[7]+1}
+  if (-20>value&&value>-30){eventRange[8]<-eventRange[8]+1}
+  if (-30>value&&value>-40){eventRange[9]<-eventRange[9]+1}
+  if (-40>value&&value>-50){eventRange[10]<-eventRange[10]+1}
+
+  
+}
 
 
