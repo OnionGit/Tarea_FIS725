@@ -58,10 +58,10 @@ evt_month<-function(month){
   }
   return(z)
 }
-
+maximo<-0
 #Loop para hallar el mes con mas eventos
 for(m in 1:12){
-  max[m] <- evt_month(m)
+  maximo[m] <- evt_month(m)
 }
 
 month<-which.max(maximo)
@@ -81,21 +81,21 @@ if (month == 12) {p<-"diciembre"}
 print("El mes con mas eventos es: ")
 print(p)
 #Haciendo el plot en coordenadas ecuatoriales
-plot(cleandata[,7],cleandata[,6])
+plot(cleandata[,7],cleandata[,6],main="Eventos en coordenadas ecuatoriales",xlab="Angulo de declinacion",ylab="Ascension Recta")
 
 #Esperaria que haya una zona más activa en el cielo que corresponderia con
 #la via lactea,ya que ahi estan todos los objetos interesantes.
-#Asi que divido el cielo en zonas de un rango de ascension recta y hallo
-#el rango con mas eventos.
+#Asi que divido el cielo en zonas en rangos de ascension recta y podemos
+#ver el histograma.
 
 
-matrix <- 0
+Ascension_Recta <- 0
 for (EvIndex in 3:54){
   value<-as.numeric(cleandata[EvIndex,6])
   #Esto hace como funcion floor.
   rangeValue = as.integer(value/10)
-  matrix[EvIndex-2]<-rangeValue
-  hist(matrix)
+  Ascension_Recta[EvIndex-2]<-(rangeValue+0.5)*10
+  hist(Ascension_Recta)
   
 }
 
